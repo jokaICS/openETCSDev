@@ -1,0 +1,50 @@
+#     Project: openETCS
+#      Module: EmergencyStop / test
+# Description: Internal test of EmergencyStop/ES_ReceiveAndControl
+source lib.tcl
+
+set eut EmergencyStop::ES_ReceiveAndControl
+
+proc checkOutput {receivedMsg15 receivedMsg16 receivedMsg18 sendMsg147 processUES} {
+  SSM::check "$::eut/receivedMsg15" "$receivedMsg15"
+  SSM::check "$::eut/receivedMsg16" "$receivedMsg16"
+  SSM::check "$::eut/receivedMsg18" "$receivedMsg18"
+  SSM::check "$::eut/sendMsg147" "$sendMsg147"
+  SSM::check "$::eut/processUES" "$processUES"
+}
+
+proc forceUES {b} {
+  SSM::set "$::eut/forceProcessUES" $b
+}
+
+
+puts "running test01"
+
+# no message
+set_InMsg_None "$eut/messageIn"
+checkOutput false false false false false
+SSM::cycle
+
+# Msg16, forceProcessUES=false
+set_Msg16 "$eut/messageIn" 1234
+forceUES false
+checkOutput false true false true true
+SSM::cycle
+
+# no message, forceProcessUES=true
+set_InMsg_None "$eut/messageIn"
+forceUES true
+checkOutput false false false false true
+SSM::cycle
+
+# Msg18, forceProcessUES=false
+set_Msg18 "$eut/messageIn" 1234
+forceUES false
+checkOutput false false true false false
+SSM::cycle
+
+# Msg15, forceProcessUES=false
+set_Msg15 "$eut/messageIn" 5678
+checkOutput true false false true false
+forceUES false
+SSM::cycle
