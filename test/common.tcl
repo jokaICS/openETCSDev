@@ -13,3 +13,7 @@ proc set_InRadioMsg {target header} {
   foreach {prop val} "$header" { SSM::set "$target.Radio_Common_Header.$prop" "$val" } 
 }
 
+proc print_activeStates {} {
+  puts "Active states in cycle [SSM::get_cycle]:"
+  puts [SSM::get_active_states]
+}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Project id="1" oid_count="267" defaultConfiguration="21">
+<Project id="1" oid_count="269" defaultConfiguration="21">
 	<props>
 		<Prop id="10" name="@STUDIO:PRODUCT">
 			<value>SC</value>
@@ -378,7 +378,6 @@
 				<Folder id="12" extensions="xscade;scade" name="Separate Files"/>
 				<FileRef id="223" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\TrackAtlas.xscade"/>
 				<FileRef id="225" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\TrackAtlasTypes.xscade"/>
-				<FileRef id="229" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\EmergencyStop.xscade"/>
 				<FileRef id="232" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\TA_MA.xscade"/>
 				<FileRef id="233" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\TA_MRSP.xscade"/>
 				<FileRef id="234" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\TA_Export.xscade"/>
@@ -391,6 +390,7 @@
 				<FileRef id="265" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\Safe_DIV_int.xscade"/>
 				<FileRef id="266" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\Safe_DIV_real.xscade"/>
 				<FileRef id="267" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\Safe_MOD_int.xscade"/>
+				<FileRef id="269" persistAs="..\..\modeling\model\Scade\System\ObuFunctions\TrackAtlas\EmergencyStop.xscade"/>
 			</elements>
 		</Folder>
 		<Folder id="84" name="Design Verifier File">

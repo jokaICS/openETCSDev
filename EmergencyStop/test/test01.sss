@@ -3,7 +3,7 @@
 # Description: Internal test of EmergencyStop/ES_ReceiveAndControl
 source lib.tcl
 
-set eut EmergencyStop::ES_ReceiveAndControl
+set eut TA_EmergencyStop::ES_ReceiveAndControl
 
 proc checkOutput {receivedMsg15 receivedMsg16 receivedMsg18 sendMsg147 processUES} {
   SSM::check "$::eut/receivedMsg15" "$receivedMsg15"

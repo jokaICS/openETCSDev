@@ -1,0 +1,55 @@
+#     Project: openETCS
+#      Module: EmergencyStop / test
+# Description: Internal test of TA_EmergencyStop/ES_Process_Conditional
+source lib.tcl
+
+set eut TA_EmergencyStop::ES_Process_Conditional
+
+puts "running test03"
+
+proc setInput {nid_em d_emergencystop receivedMsg15 receivedMsg18\
+               {d_ref 0}\
+               {q_dir Q_DIR_Nominal}\
+               {q_scale Q_SCALE_10_cm_scale}} {
+  SSM::set "$::eut/nid_em" $nid_em
+  SSM::set "$::eut/q_scale" $q_scale
+  SSM::set "$::eut/d_ref" $d_ref
+  SSM::set "$::eut/q_dir" $q_dir
+  SSM::set "$::eut/d_emergencystop" $d_emergencystop
+  SSM::set "$::eut/receivedMsg15" $receivedMsg15
+  SSM::set "$::eut/receivedMsg18" $receivedMsg18
+}
+
+proc checkOutput {cesActive cesAccepted newEOA} {
+  SSM::check "$::eut/cesActive" $cesActive
+  SSM::check "$::eut/cesAccepted" $cesAccepted
+  SSM::check "$::eut/newEOA" $newEOA
+}
+
+# 1) nop
+checkOutput false false 0
+SSM::cycle
+
+# 2) receive Msg15
+setInput 4321 50 true false
+checkOutput true true 0
+SSM::cycle
+
+# 3) nop
+setInput 0 0 false false
+checkOutput true false 0
+SSM::cycle
+
+# 4) nop
+checkOutput true false 0
+SSM::cycle
+
+# 5) receive Msg18
+setInput 4321 0 false true
+checkOutput false false 0
+SSM::cycle
+
+# 6) receive Msg15
+setInput 5432 100 true false
+checkOutput true true 0
+SSM::cycle

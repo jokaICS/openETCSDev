@@ -1,0 +1,67 @@
+#     Project: openETCS
+#      Module: EmergencyStop / test
+# Description: Internal test of TA_EmergencyStop/ES_Process_Unconditional
+source lib.tcl
+
+set eut TA_EmergencyStop::ES_Process_Unconditional
+
+puts "running test02"
+
+proc setInput {nid_em receivedMsg16 receivedMsg18} {
+  SSM::set "$::eut/nid_em" $nid_em
+  SSM::set "$::eut/receivedMsg16" $receivedMsg16
+  SSM::set "$::eut/receivedMsg18" $receivedMsg18
+}
+
+proc checkOutput {uesActive} {
+  SSM::check "$::eut/uesActive" $uesActive
+}
+
+# 1) receive Msg16
+setInput 1234 true false
+checkOutput true
+SSM::cycle
+
+# 2) nop
+setInput 0 false false
+checkOutput true
+SSM::cycle
+
+# 3) nop
+checkOutput true
+SSM::cycle
+
+# 4) receive Msg18
+setInput 1234 false true
+checkOutput false
+SSM::cycle
+
+# 5) nop
+setInput 0 false false
+checkOutput false
+SSM::cycle
+
+# 6) receive Msg18 w/o corresponding Msg16
+setInput 5555 false true
+checkOutput false
+SSM::cycle
+
+# 7) nop
+setInput 0 false false
+checkOutput false
+SSM::cycle
+
+# 8) receive Msg16 + Msg18 (which is actually not possible)
+setInput 0 true true
+checkOutput true
+SSM::cycle
+
+# 9) receive Msg18
+setInput 0 false true
+checkOutput true
+SSM::cycle
+
+# 10) nop
+setInput 0 false false
+checkOutput false
+SSM::cycle
