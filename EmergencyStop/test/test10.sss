@@ -1,0 +1,81 @@
+#     Project: openETCS
+#      Module: EmergencyStop / test
+# Description: Test TA_EmergencyStop/Manage_EmergencyStop with Msg16
+source manage_emergency.tcl
+
+puts "running test10"
+
+# 1) nop
+nop
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+#print_activeStates
+
+# 2) receive Msg16
+set_Msg16 "$eut/messageIn" 4321
+input 20 100
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 true 20 4321 2
+SSM::cycle
+#print_activeStates
+
+# 3) nop
+set_InMsg_None "$::eut/messageIn"
+input 30 150
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 false
+SSM::cycle
+#print_activeStates
+
+# 4) receive Msg18
+set_Msg18 "$eut/messageIn" 4321
+input 40 200
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+#print_activeStates
+
+# 5) nop
+set_InMsg_None "$::eut/messageIn"
+input 50 250
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+#print_activeStates
+
+# 6) receive Msg16
+set_Msg16 "$eut/messageIn" 5432
+input 60 300
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 true 50 5432 2
+SSM::cycle
+#print_activeStates
+
+# 7) receive Msg18 with wrong ID
+set_Msg18 "$eut/messageIn" 4321
+input 70 350
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 8) nop
+set_InMsg_None "$::eut/messageIn"
+input 80 400
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 9) receive Msg18
+set_Msg18 "$eut/messageIn" 5432
+input 90 450
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 10) nop
+set_InMsg_None "$::eut/messageIn"
+input 100 500
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle

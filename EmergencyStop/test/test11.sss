@@ -1,0 +1,62 @@
+#     Project: openETCS
+#      Module: EmergencyStop / test
+# Description: Test TA_EmergencyStop/Manage_EmergencyStop with Msg15
+source manage_emergency.tcl
+
+puts "running test11"
+
+# 1) nop
+nop
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 2) receive Msg15, accept with EOA update
+set_Msg15 "$eut/messageIn" 4321 500
+input 20 100
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=true newEOA=500 cesRevoked=false
+checkMsg147 true 20 4321 0
+SSM::cycle
+#print_activeStates
+
+# 3) nop
+set_InMsg_None "$eut/messageIn"
+input 30 150 500
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 4) receive Msg18, revoke CES
+set_Msg18 "$eut/messageIn" 4321
+input 40 200 500
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=true
+checkMsg147
+SSM::cycle
+
+# 5) receive Msg15, accept without EOA update
+set_Msg15 "$eut/messageIn" 5432 700
+input 50 250 500
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 true 50 5432 0
+SSM::cycle
+
+# 6) receive Msg18 with wrong nid_em
+set_Msg18 "$eut/messageIn" 4321
+input 60 300 500
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 7) receive Msg18 with correct nid_em
+set_Msg18 "$eut/messageIn" 5432
+input 70 350 500
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=true
+checkMsg147
+SSM::cycle
+
+# 8) nop
+set_InMsg_None "$eut/messageIn"
+input 70 400 500
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
