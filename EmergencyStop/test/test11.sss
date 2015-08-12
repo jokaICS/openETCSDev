@@ -56,7 +56,21 @@ SSM::cycle
 
 # 8) nop
 set_InMsg_None "$eut/messageIn"
-input 70 400 500
+input 80 400 500
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 9) receive Msg15, not accepted
+set_Msg15 "$eut/messageIn" 6543 400
+input 90 450 500
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 true 90 6543 3
+SSM::cycle
+
+# 10) nop
+set_InMsg_None "$eut/messageIn"
+input 100 500 500
 checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
 checkMsg147
 SSM::cycle
