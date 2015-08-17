@@ -5,7 +5,8 @@ source lib.tcl
 
 set eut TA_EmergencyStop::Manage_EmergencyStop
 
-proc input {t_train {minSafeFront 0} {currentEOA 1000} {nid_engine 321}} {
+# minSafeFront and currentEOA are specified in cm (not in Q_SCALE used by MSG15!)
+proc input {t_train {minSafeFront 0} {currentEOA 10000} {nid_engine 321}} {
   SSM::set "$::eut/t_train" $t_train
   SSM::set "$::eut/trainProps.nid_engine" $nid_engine
   SSM::set "$::eut/TrainPositionIn.minSafeFrontEndPosition" $minSafeFront

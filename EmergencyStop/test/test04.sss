@@ -1,0 +1,94 @@
+#     Project: openETCS
+#      Module: EmergencyStop / test
+# Description: Internal test of TA_EmergencyStop/NID_EM_Store/Manage_NID_EM_Store
+source lib.tcl
+
+set eut TA_EmergencyStop::NID_EM_Store::Manage_NID_EM_Store
+
+puts "running test04"
+
+proc setInput {add remove nid_em nfree} {
+  SSM::set "$::eut/add" $add
+  SSM::set "$::eut/remove" $remove
+  SSM::set "$::eut/nid_em" $nid_em
+  SSM::set "$::eut/inStore.nfree" $nfree
+}
+
+proc setEntry {index nid_em valid} {
+  SSM::set "$::eut/inStore.items\[$index\].nid_em" $nid_em
+  SSM::set "$::eut/inStore.items\[$index\].valid" $valid
+}
+
+proc checkEntry {index nid_em valid} {
+  SSM::check "$::eut/outStore.items\[$index\].nid_em" $nid_em
+  SSM::check "$::eut/outStore.items\[$index\].valid" $valid
+}
+
+proc checkOutput {nfree} {
+  SSM::check "$::eut/outStore.nfree" $nfree
+}
+
+# 1) nop
+setInput false false 0 8
+checkOutput 8
+SSM::cycle
+
+# 2) add NID_EM 1234
+setInput true false 1234 8
+checkEntry 0 1234 true
+checkEntry 1 0 false
+checkEntry 2 0 false
+checkEntry 3 0 false
+checkEntry 4 0 false
+checkEntry 5 0 false
+checkEntry 6 0 false
+checkEntry 7 0 false
+checkOutput 7
+SSM::cycle
+
+# 3) add NID_EM 2345
+setInput true false 2345 7
+setEntry 0 1234 true
+checkEntry 0 1234 true
+checkEntry 1 2345 true
+checkEntry 2 0 false
+checkEntry 3 0 false
+checkEntry 4 0 false
+checkEntry 5 0 false
+checkEntry 6 0 false
+checkEntry 7 0 false
+checkOutput 6
+SSM::cycle
+
+# 4) add NID_EM 3456
+setInput true false 3456 6
+setEntry 0 1234 true
+setEntry 1 2345 true
+checkEntry 0 1234 true
+checkEntry 1 2345 true
+checkEntry 2 3456 true
+checkEntry 3 0 false
+checkEntry 4 0 false
+checkEntry 5 0 false
+checkEntry 6 0 false
+checkEntry 7 0 false
+checkOutput 5
+SSM::cycle
+
+# 5) remove NID_EM 2345
+setInput false true 2345 5
+setEntry 0 1234 true
+setEntry 1 2345 true
+setEntry 2 3456 true
+checkEntry 0 1234 true
+checkEntry 1 0 false
+checkEntry 2 3456 true
+checkEntry 3 0 false
+checkEntry 4 0 false
+checkEntry 5 0 false
+checkEntry 6 0 false
+checkEntry 7 0 false
+checkOutput 6
+SSM::cycle
+
+

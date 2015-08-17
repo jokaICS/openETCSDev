@@ -13,64 +13,64 @@ SSM::cycle
 
 # 2) receive Msg15, accept with EOA update
 set_Msg15 "$eut/messageIn" 4321 500
-input 20 100
-checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=true newEOA=500 cesRevoked=false
+input 20 1000
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=true newEOA=5000 cesRevoked=false
 checkMsg147 true 20 4321 0
 SSM::cycle
 #print_activeStates
 
 # 3) nop
 set_InMsg_None "$eut/messageIn"
-input 30 150 500
+input 30 1500 5000
 checkOutput tripTrain=false rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
 checkMsg147
 SSM::cycle
 
 # 4) receive Msg18, revoke CES
 set_Msg18 "$eut/messageIn" 4321
-input 40 200 500
+input 40 2000 5000
 checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=true
 checkMsg147
 SSM::cycle
 
 # 5) receive Msg15, accept without EOA update
 set_Msg15 "$eut/messageIn" 5432 700
-input 50 250 500
+input 50 2500 5000
 checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=false newEOA=0 cesRevoked=false
 checkMsg147 true 50 5432 0
 SSM::cycle
 
 # 6) receive Msg18 with wrong nid_em
 set_Msg18 "$eut/messageIn" 4321
-input 60 300 500
+input 60 3000 5000
 checkOutput tripTrain=false rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
 checkMsg147
 SSM::cycle
 
 # 7) receive Msg18 with correct nid_em
 set_Msg18 "$eut/messageIn" 5432
-input 70 350 500
+input 70 3500 5000
 checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=true
 checkMsg147
 SSM::cycle
 
 # 8) nop
 set_InMsg_None "$eut/messageIn"
-input 80 400 500
+input 80 4000 5000
 checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
 checkMsg147
 SSM::cycle
 
 # 9) receive Msg15, not accepted
 set_Msg15 "$eut/messageIn" 6543 400
-input 90 450 500
+input 90 4500 5000
 checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
 checkMsg147 true 90 6543 3
 SSM::cycle
 
 # 10) nop
 set_InMsg_None "$eut/messageIn"
-input 100 500 500
+input 100 5000 5000
 checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
 checkMsg147
 SSM::cycle
