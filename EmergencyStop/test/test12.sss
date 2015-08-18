@@ -1,0 +1,138 @@
+#     Project: openETCS
+#      Module: EmergencyStop / test
+# Description: Test handling of concurrent emergency messages by TA_EmergencyStop/Manage_EmergencyStop
+source manage_emergency.tcl
+
+puts "running test12"
+
+# 1) nop
+nop
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 2) receive Msg16 with ID 4321
+set_Msg16 "$eut/messageIn" 4321
+input 20 1000
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 true 20 4321 2
+SSM::cycle
+
+# 3) nop
+nop
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+#print_activeStates
+
+# 4) receive Msg16 with ID 5432
+set_Msg16 "$eut/messageIn" 5432
+input 40 1100
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 true 40 5432 2
+SSM::cycle
+
+# 5) receive Msg15 with ID 6543, LOA 500
+set_Msg15 "$eut/messageIn" 6543 500
+input 50 1200
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=true updateEOA=true newEOA=5000 cesRevoked=false
+checkMsg147 true 50 6543 0
+SSM::cycle
+
+# 6) revoke Msg16/4321
+set_Msg18 "$eut/messageIn" 4321
+input 60 1300
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 7) revoke Msg16/4321
+set_Msg18 "$eut/messageIn" 4321
+input 70 1400
+checkOutput tripTrain=true rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 8) revoke Msg16/5432
+set_Msg18 "$eut/messageIn" 5432
+input 80 1500
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 9) receive Msg15 with ID 7654, LOA 800
+set_Msg15 "$eut/messageIn" 7654 800
+input 90 1600 5000
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 true 90 7654 1
+SSM::cycle
+
+# 10) revoke Msg15/6543
+set_Msg18 "$eut/messageIn" 6543
+input 100 1700 5000
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=true
+checkMsg147
+SSM::cycle
+
+# 11) receive Msg15 with ID 8765, LOA 100
+set_Msg15 "$eut/messageIn" 8765 100
+input 110 1800 5000
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 true 110 8765 3
+SSM::cycle
+
+# 12) revoke Msg15/8765
+set_Msg18 "$eut/messageIn" 8765
+input 120 1900 5000
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 13) revoke Msg15/7654
+set_Msg18 "$eut/messageIn" 7654
+input 130 2000 5000
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=true
+checkMsg147
+SSM::cycle
+
+# 14) receive Msg15/9876, LOA 4000
+set_Msg15 "$eut/messageIn" 9876 400
+input 140 2100 5000
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=true newEOA=4000 cesRevoked=false
+checkMsg147 true 140 9876 0
+SSM::cycle
+
+# 15) receive Msg15/9876, LOA 3500
+set_Msg15 "$eut/messageIn" 9876 350
+input 150 2200 4000
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=true newEOA=3500 cesRevoked=false
+checkMsg147 true 150 9876 0
+SSM::cycle
+
+# 16) receive Msg15/9876, LOA 4000
+set_Msg15 "$eut/messageIn" 9876 400
+input 160 2300 3500
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147 true 160 9876 1
+SSM::cycle
+
+# 17) revoke Msg15/1111
+set_Msg18 "$eut/messageIn" 1111
+input 170 2400 3500
+checkOutput tripTrain=false rejectNewMA=true cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle
+
+# 18) revoke Msg15/9876
+set_Msg18 "$eut/messageIn" 9876
+input 180 2500 3500
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=true
+checkMsg147
+SSM::cycle
+
+# 19) nop
+nop
+input 190 2600 3500
+checkOutput tripTrain=false rejectNewMA=false cesAccepted=false updateEOA=false newEOA=0 cesRevoked=false
+checkMsg147
+SSM::cycle

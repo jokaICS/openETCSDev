@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Project id="1" oid_count="271" defaultConfiguration="21">
+<Project id="1" oid_count="272" defaultConfiguration="21">
 	<props>
 		<Prop id="10" name="@STUDIO:PRODUCT">
 			<value>SC</value>
@@ -53,10 +53,6 @@
 			<configuration>21</configuration>
 		</Prop>
 		<Prop id="27" name="@GENERATOR:PROBES">
-			<value>true</value>
-			<configuration>21</configuration>
-		</Prop>
-		<Prop id="28" name="@GENERATOR:SKIP_UNUSED">
 			<value>true</value>
 			<configuration>21</configuration>
 		</Prop>
@@ -359,6 +355,10 @@
 		</Prop>
 		<Prop id="29" name="@GENERATOR:TARGET_ADAPTOR">
 			<value>Simulator</value>
+			<configuration>21</configuration>
+		</Prop>
+		<Prop id="272" name="@GENERATOR:SKIP_UNUSED">
+			<value>true</value>
 			<configuration>21</configuration>
 		</Prop>
 	</props>

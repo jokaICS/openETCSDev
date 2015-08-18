@@ -37,7 +37,7 @@ SSM::cycle
 set_Msg15 "$eut/messageIn" 5432 700
 input 50 2500 5000
 checkOutput tripTrain=false rejectNewMA=true cesAccepted=true updateEOA=false newEOA=0 cesRevoked=false
-checkMsg147 true 50 5432 0
+checkMsg147 true 50 5432 1
 SSM::cycle
 
 # 6) receive Msg18 with wrong nid_em
